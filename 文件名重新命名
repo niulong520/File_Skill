@@ -1,0 +1,12 @@
+# ！user/bim/python
+# -*- coding: utf-8 -*-
+# @Time    : 2023/7/1 12:19
+# @Author  : 马拉小龙虾
+# @FileName: 文件名字重命名.py
+import os
+file_path = r"D:\Desktop\AERA"
+for file in os.listdir(file_path):
+    print(file)
+    file_new = f"00{file[-6:-4]}_History.txt"
+    file_name = file.replace(file,file_new)
+    os.rename(os.path.join(file_path,file),os.path.join(file_path,file_name))

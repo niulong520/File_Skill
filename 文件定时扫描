@@ -1,0 +1,58 @@
+# ！user/bim/python
+# -*- coding: utf-8 -*-
+# @Time    : 2023/7/1 12:24
+# @Author  : 马拉小龙虾
+# @FileName: 文件定期扫描.py
+import os
+import sys
+import time
+import random
+import datetime
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from apscheduler.schedulers.blocking import BlockingScheduler
+# csdn https://blog.csdn.net/m0_61634551/article/details/129964863
+time_j = 0
+global old_file_time
+def ScanFile(directory, prefix=None, postfix=None):
+    file_list = []
+    for root, sub_dirs, files in os.walk(directory):
+        for special_file in files:
+            # 如果指定前缀或者后缀
+            if postfix or prefix:
+                # 同时指定前缀和后缀
+                if postfix and prefix:
+                    if special_file.endswith(postfix) and special_file.startswith(prefix):
+                        file_list.append(os.path.join(root, special_file))
+                        continue
+
+                # 只指定后缀
+                elif postfix:
+                    if special_file.endswith(postfix):
+                        file_list.append(os.path.join(root, special_file))
+                        continue
+
+                # 只指定前缀
+                elif prefix:
+                    if special_file.startswith(prefix):
+                        file_list.append(os.path.join(root, special_file))
+                        continue
+            # 前缀后缀均未指定
+            else:
+                file_list.append(os.path.join(root, special_file))
+                continue
+    # print(file_list)	# 打印出扫描到的文件路径
+    print("*"*20)
+    print(f"第{time_j}次 扫描")
+    print("*"*20)
+
+    return file_list
+
+ScanFile(r"D:\Desktop\example",postfix=".txt")
+sched = BlockingScheduler()
+# 在1-3，8-10月，每天的下午5点，每一分钟执行一次任务
+sched.add_job(func=ScanFile, args=(r"D:\Desktop\example",None,".txt"),trigger='cron', month='1-12', day='*', hour='18', minute='*',second='*/20')
+sched.start()
+
+
